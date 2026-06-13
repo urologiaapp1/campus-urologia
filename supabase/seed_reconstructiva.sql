@@ -15,6 +15,7 @@ with prog as (
     'Programa de formación en cirugía reconstructiva uretral basado en el Textbook of Male Genitourethral Reconstruction (Martins, Kulkarni & Köhler, 2020). Recorre desde la anatomía funcional y el diagnóstico de la estenosis uretral hasta las técnicas de uretroplastia anterior y posterior, manejo de casos complejos, reconstrucción protésica asociada y seguimiento. Cada tema incorpora la discusión de casos reales del Club de la Uretra.',
     false
   )
+  on conflict (slug) do update set title = excluded.title
   returning id
 )
 insert into public.modules (program_id, title, position)
