@@ -1,0 +1,18 @@
+{
+  "name": "Campus Urología Sur",
+  "short_name": "Campus US",
+  "description": "Plataforma de diplomados y magíster en salud — Urología Sur",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0c647c",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
