@@ -5,6 +5,7 @@ import { getSessionProfile } from '@/lib/supabase/server';
 import DriveViewer from '@/components/DriveViewer';
 import MarkComplete from '@/components/MarkComplete';
 import QuizRunner from '@/components/QuizRunner';
+import RichTextViewer from '@/components/RichTextViewer';
 
 const TutorChat = nextDynamic(() => import('@/components/TutorChat'), { ssr: false });
 
@@ -63,8 +64,10 @@ export default async function LessonPage({ params }) {
 
       <div className="mt-6">
         {lesson.kind === 'texto' ? (
-          <div className="card whitespace-pre-wrap p-6 text-sm leading-relaxed text-slate-700">
-            {lesson.body || 'Sin contenido.'}
+          <div className="card p-6">
+            {lesson.body
+              ? <RichTextViewer html={lesson.body} />
+              : <p className="text-sm text-slate-400">Sin contenido.</p>}
           </div>
         ) : (
           <DriveViewer fileId={lesson.drive_file_id} kind={lesson.kind} title={lesson.title} />

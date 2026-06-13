@@ -148,10 +148,13 @@ function ModuleCard({ module: m, index, onAddLesson, onRemoveLesson, onRemoveMod
               {l.title}
             </span>
             <span className="flex items-center gap-2">
-              <Link href={`/admin/leccion/${l.id}/quiz`} className="btn-secondary">
-                {l.quizzes?.length ? 'Editar quiz' : 'Crear quiz'}
+              <Link href={`/admin/leccion/${l.id}/editar`} className="btn-secondary text-xs">
+                ✏️ Editar
               </Link>
-              <button onClick={() => onRemoveLesson(l)} className="btn-danger">Eliminar</button>
+              <Link href={`/admin/leccion/${l.id}/quiz`} className="btn-secondary text-xs">
+                {l.quizzes?.length ? 'Quiz' : '+ Quiz'}
+              </Link>
+              <button onClick={() => onRemoveLesson(l)} className="btn-danger text-xs">Eliminar</button>
             </span>
           </li>
         ))}
