@@ -38,7 +38,8 @@ export async function middleware(request) {
     pathname.startsWith('/tarea') ||
     pathname.startsWith('/ranking') ||
     pathname.startsWith('/usuario') ||
-    pathname.startsWith('/pago');
+    pathname.startsWith('/pago') ||
+    pathname.startsWith('/simulador');
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();

@@ -87,6 +87,9 @@ export default function AdminProgramContent() {
           <Link href={`/admin/programa/${program.id}/anuncios`} className="btn-secondary text-sm">
             📢 Anuncios
           </Link>
+          <Link href={`/admin/programa/${program.id}/casos`} className="btn-secondary text-sm">
+            🩺 Casos clínicos
+          </Link>
           <Link href={`/admin/programa/${program.id}/tutor`} className="btn-secondary text-sm">
             🤖 Tutor IA
           </Link>

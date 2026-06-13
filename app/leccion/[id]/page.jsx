@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { getSessionProfile } from '@/lib/supabase/server';
 import DriveViewer from '@/components/DriveViewer';
 import MarkComplete from '@/components/MarkComplete';
 import QuizRunner from '@/components/QuizRunner';
 
-const TutorChat = dynamic(() => import('@/components/TutorChat'), { ssr: false });
+const TutorChat = nextDynamic(() => import('@/components/TutorChat'), { ssr: false });
 
 export const dynamic = 'force-dynamic';
 

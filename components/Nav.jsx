@@ -26,6 +26,7 @@ export default function Nav({ user, profile }) {
           {user ? (
             <>
               <Link href="/dashboard" className="font-medium text-slate-600 hover:text-brand-600">Mis programas</Link>
+              <Link href="/simulador" className="hidden font-medium text-slate-600 hover:text-brand-600 sm:inline">Simulador</Link>
               <Link href="/buscar" className="hidden font-medium text-slate-600 hover:text-brand-600 sm:inline">Buscar</Link>
               <Link href="/ranking" className="hidden font-medium text-slate-600 hover:text-brand-600 sm:inline">Ranking</Link>
               {isStaff && (
