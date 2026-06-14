@@ -12,12 +12,14 @@ export default function AdminProgramContent() {
   const [modules, setModules] = useState([]);
   const [newModule, setNewModule] = useState('');
   const [desc, setDesc] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [enrolled, setEnrolled] = useState(false);
 
   const load = useCallback(async () => {
     const { data: p } = await supabase.from('programs').select('*').eq('id', id).single();
     setProgram(p);
     setDesc(p?.description || '');
+    setAccessCode(p?.access_code || '');
     const { data: m } = await supabase
       .from('modules')
       .select('id, title, position, lessons(id, title, kind, drive_file_id, duration_min, position, quizzes(id))')
@@ -42,6 +44,20 @@ export default function AdminProgramContent() {
   async function saveDescription() {
     await supabase.from('programs').update({ description: desc }).eq('id', id);
     alert('Descripción guardada');
+  }
+
+  async function saveAccessCode() {
+    const code = accessCode.trim().toUpperCase() || null;
+    const { error } = await supabase.from('programs').update({ access_code: code }).eq('id', id);
+    if (error) alert('Error: ' + error.message);
+    else alert(code ? `Código guardado: ${code}` : 'Código eliminado.');
+    setAccessCode(code || '');
+  }
+
+  function generateCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    setAccessCode(code);
   }
 
   async function toggleSelfEnroll() {
@@ -128,6 +144,35 @@ export default function AdminProgramContent() {
             📊 Estadísticas
           </Link>
         </div>
+      </div>
+
+      {/* Código de acceso */}
+      <div className="card mt-4 p-4">
+        <label className="label">Código de acceso</label>
+        <p className="mb-2 text-xs text-slate-500">
+          Los alumnos ingresan este código en la página principal para matricularse automáticamente.
+          Déjalo vacío si el programa no usa código de acceso.
+        </p>
+        <div className="flex items-center gap-2">
+          <input
+            className="input w-48 font-mono text-center text-lg font-bold uppercase tracking-widest"
+            value={accessCode}
+            onChange={(e) => setAccessCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+            placeholder="XXXXXXXX"
+            maxLength={20}
+          />
+          <button onClick={generateCode} className="btn-secondary text-sm">🎲 Generar</button>
+          <button onClick={saveAccessCode} className="btn-primary text-sm">Guardar código</button>
+          {accessCode && (
+            <button onClick={() => { setAccessCode(''); saveAccessCode(); }} className="btn-danger text-sm">Eliminar</button>
+          )}
+        </div>
+        {accessCode && (
+          <p className="mt-2 text-xs text-slate-400">
+            Código activo: <span className="font-mono font-bold text-brand-700">{accessCode}</span>
+            {' · '}Compártelo con tus alumnos para que accedan desde la página principal.
+          </p>
+        )}
       </div>
 
       <div className="card mt-4 p-4">
