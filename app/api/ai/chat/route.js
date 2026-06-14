@@ -120,7 +120,7 @@ export async function POST(request) {
 
   // Construir system prompt
   const baseSystemPrompt = tutorConfig?.system_prompt ||
-    `Eres un tutor médico especializado en urología para el Campus Urología Sur.
+    `Eres un tutor médico especializado en urología para el Campus Urología Chile.
 Ayudas a médicos y estudiantes de posgrado a comprender conceptos de urología
 con un enfoque clínico y basado en evidencia. Eres conciso, preciso y didáctico.
 Cuando no sabes algo, lo dices claramente. Respondes siempre en español.`;

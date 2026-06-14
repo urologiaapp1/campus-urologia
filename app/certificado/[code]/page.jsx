@@ -25,7 +25,7 @@ export default async function CertificatePage({ params }) {
           <h1 className="mt-2 text-xl font-bold text-red-700">Certificado no válido</h1>
           <p className="mt-2 text-sm text-slate-500">
             El código <b>{params.code}</b> no corresponde a ningún certificado emitido
-            por Urología Sur.
+            por Campus Urología Chile.
           </p>
         </div>
       </div>
@@ -41,13 +41,13 @@ export default async function CertificatePage({ params }) {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-4 flex items-center justify-between rounded-lg bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 print:hidden">
-        ✓ Certificado verificado — emitido por Urología Sur
+        ✓ Certificado verificado — emitido por Campus Urología Chile
         <PrintButton />
       </div>
 
       <div className="card relative overflow-hidden border-2 border-brand-200 p-12 text-center">
         <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-brand-500 to-brand-900" />
-        <p className="font-bold tracking-widest text-brand-600">UROLOGÍA SUR</p>
+        <p className="font-bold tracking-widest text-brand-600">CAMPUS UROLOGÍA CHILE</p>
         <p className="mt-1 text-xs uppercase tracking-wide text-slate-400">Campus Virtual — Formación de Postgrado en Salud</p>
 
         <p className="mt-10 text-sm text-slate-500">Se certifica que</p>

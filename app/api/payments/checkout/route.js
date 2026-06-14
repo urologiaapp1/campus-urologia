@@ -92,7 +92,7 @@ export async function POST(request) {
         unit_amount: price.amount_clp,
         product_data: {
           name: price.programs?.title || 'Programa médico',
-          description: 'Campus Urología Sur — Matrícula',
+          description: 'Campus Urología Chile — Matrícula',
         },
       },
       quantity: 1,

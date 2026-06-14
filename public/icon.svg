@@ -1,10 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Fondo: rounded square petróleo clínico -->
   <rect width="100" height="100" rx="22" fill="#083f52"/>
-  <!-- U: dos pilares + arco inferior -->
-  <rect x="14" y="22" width="12" height="42" rx="3" fill="#ffffff"/>
-  <rect x="38" y="22" width="12" height="42" rx="3" fill="#ffffff"/>
-  <rect x="14" y="55" width="36" height="12" rx="6" fill="#ffffff"/>
-  <!-- C: arco abierto a la derecha -->
-  <path d="M86 28 Q62 28 62 50 Q62 72 86 72" stroke="#ffffff" stroke-width="12" fill="none" stroke-linecap="round"/>
+
+  <!-- C grande: arco abierto a la derecha, lado izquierdo -->
+  <path d="M40 15 Q11 15 11 46 Q11 77 40 77"
+        stroke="#ffffff" stroke-width="11" fill="none" stroke-linecap="round"/>
+
+  <!-- U grande: dos pilares + base, lado derecho -->
+  <rect x="50" y="15" width="10" height="41" rx="3" fill="#ffffff"/>
+  <rect x="73" y="15" width="10" height="41" rx="3" fill="#ffffff"/>
+  <rect x="50" y="48" width="33" height="10" rx="5" fill="#ffffff"/>
+
+  <!-- Ch pequeño abajo-derecha en cian (#22d3ee) -->
+  <!-- C pequeña: arco -->
+  <path d="M57 74 Q49 74 49 82 Q49 90 57 90"
+        stroke="#22d3ee" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+  <!-- h: pilar vertical -->
+  <rect x="62" y="70" width="5" height="20" rx="2" fill="#22d3ee"/>
+  <!-- h: pata derecha -->
+  <path d="M67 80 Q68 75 75 75 L75 90"
+        stroke="#22d3ee" stroke-width="5" fill="none" stroke-linecap="round"/>
 </svg>

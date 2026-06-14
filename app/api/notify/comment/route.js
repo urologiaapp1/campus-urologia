@@ -30,7 +30,7 @@ export async function POST(request) {
     to: email,
     subject: `Nueva opinión en tu tópico: ${topic.title}`,
     html: `<p><b>${commenter?.full_name || 'Un participante'}</b> opinó en tu tópico
-           "<b>${topic.title}</b>" en el Campus Urología Sur.</p>
+           "<b>${topic.title}</b>" en el Campus Urología Chile.</p>
            <p><a href="${url}">Ver la discusión →</a></p>`,
   });
 

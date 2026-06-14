@@ -216,7 +216,7 @@ export default function LandingPage({ programs, user }) {
         <div className="relative mx-auto max-w-4xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-200 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            Campus Urología Sur
+            Campus Urología Chile
           </span>
 
           <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">

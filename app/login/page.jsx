@@ -4,15 +4,18 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 
-/* ── Logo ─────────────────────────────────────────────────────── */
+/* ── Logo CUCh ────────────────────────────────────────────────── */
 function LogoUC({ size = 40, className = '' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className={className}>
       <rect width="100" height="100" rx="22" fill="#083f52"/>
-      <rect x="14" y="22" width="12" height="42" rx="3" fill="#fff"/>
-      <rect x="38" y="22" width="12" height="42" rx="3" fill="#fff"/>
-      <rect x="14" y="55" width="36" height="12" rx="6" fill="#fff"/>
-      <path d="M86 28 Q62 28 62 50 Q62 72 86 72" stroke="#fff" strokeWidth="12" fill="none" strokeLinecap="round"/>
+      <path d="M40 15 Q11 15 11 46 Q11 77 40 77" stroke="#fff" strokeWidth="11" fill="none" strokeLinecap="round"/>
+      <rect x="50" y="15" width="10" height="41" rx="3" fill="#fff"/>
+      <rect x="73" y="15" width="10" height="41" rx="3" fill="#fff"/>
+      <rect x="50" y="48" width="33" height="10" rx="5" fill="#fff"/>
+      <path d="M57 74 Q49 74 49 82 Q49 90 57 90" stroke="#22d3ee" strokeWidth="5.5" fill="none" strokeLinecap="round"/>
+      <rect x="62" y="70" width="5" height="20" rx="2" fill="#22d3ee"/>
+      <path d="M67 80 Q68 75 75 75 L75 90" stroke="#22d3ee" strokeWidth="5" fill="none" strokeLinecap="round"/>
     </svg>
   );
 }
@@ -64,12 +67,8 @@ function LoginForm() {
         <div className="relative flex items-center gap-3">
           <LogoUC size={40} />
           <div className="leading-tight">
-            <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-300">
-              Campus
-            </span>
-            <span className="block text-sm font-bold text-white">
-              Urología Chile
-            </span>
+            <span className="block text-base font-black tracking-tight text-white">CUCh</span>
+            <span className="block text-[10px] font-medium text-brand-300">Campus Urología Chile</span>
           </div>
         </div>
 
@@ -101,7 +100,7 @@ function LoginForm() {
 
         {/* Footer */}
         <p className="relative text-[11px] text-brand-400">
-          © {new Date().getFullYear()} Urología Sur · info@urologiasur.cl
+          © {new Date().getFullYear()} Campus Urología Chile · info@urologiasur.cl
         </p>
       </div>
 
