@@ -1,11 +1,11 @@
 {
-  "name": "Campus Urología Sur",
-  "short_name": "Campus US",
-  "description": "Plataforma de diplomados y magíster en salud — Urología Sur",
+  "name": "Campus Urología Chile",
+  "short_name": "Campus UC",
+  "description": "Plataforma de diplomados y magíster en salud — Urología Chile",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#0c647c",
+  "background_color": "#0f1923",
+  "theme_color": "#083f52",
   "lang": "es",
   "icons": [
     {

@@ -109,7 +109,7 @@ export default function TutorChat({ lessonId, lessonTitle }) {
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
       {/* Panel de chat */}
       {open && (
-        <div className="flex flex-col w-80 sm:w-96 h-[480px] rounded-2xl shadow-2xl border border-slate-200 bg-white overflow-hidden">
+        <div className="flex flex-col w-80 sm:w-96 h-[480px] rounded-2xl shadow-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between bg-brand-700 px-4 py-3 shrink-0">
             <div>
@@ -129,7 +129,7 @@ export default function TutorChat({ lessonId, lessonTitle }) {
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
               <div className="space-y-2">
-                <p className="text-xs text-slate-400 text-center">
+                <p className="text-xs text-[var(--text-3)] text-center">
                   Hola, soy tu tutor IA. Pregúntame sobre el contenido de esta lección.
                 </p>
                 <div className="space-y-1.5 mt-3">
@@ -155,7 +155,7 @@ export default function TutorChat({ lessonId, lessonTitle }) {
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                     m.role === 'user'
                       ? 'bg-brand-600 text-white rounded-br-sm'
-                      : 'bg-slate-100 text-slate-800 rounded-bl-sm'
+                      : 'bg-[var(--surface-2)] text-[var(--text-1)] rounded-bl-sm'
                   }`}
                 >
                   {m.content || (m.streaming && <span className="animate-pulse">▋</span>)}
@@ -168,7 +168,7 @@ export default function TutorChat({ lessonId, lessonTitle }) {
           {/* Input */}
           <form
             onSubmit={(e) => { e.preventDefault(); sendMessage(); }}
-            className="flex gap-2 border-t border-slate-100 p-3 shrink-0"
+            className="flex gap-2 border-t border-[var(--border)] p-3 shrink-0"
           >
             <input
               ref={inputRef}
@@ -176,7 +176,7 @@ export default function TutorChat({ lessonId, lessonTitle }) {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe tu pregunta…"
               disabled={loading}
-              className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 disabled:opacity-50"
+              className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--text-1)] outline-none placeholder:text-[var(--text-3)] focus:border-brand-400 focus:ring-2 focus:ring-brand-100 disabled:opacity-50"
             />
             <button
               type="submit"

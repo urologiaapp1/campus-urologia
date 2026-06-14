@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 const BADGE = {
-  básico: 'bg-green-100 text-green-700',
-  intermedio: 'bg-yellow-100 text-yellow-700',
-  avanzado: 'bg-red-100 text-red-700',
+  básico:     'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  intermedio: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  avanzado:   'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 };
 
 const STARTERS = [
@@ -153,7 +153,7 @@ export default function SimuladorSessionPage() {
   if (!clinicalCase) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-slate-400">Cargando caso…</p>
+        <p className="text-[var(--text-3)]">Cargando caso…</p>
       </div>
     );
   }
@@ -165,31 +165,31 @@ export default function SimuladorSessionPage() {
   return (
     <div className="mx-auto flex h-[calc(100vh-5rem)] max-w-3xl flex-col">
       {/* Cabecera */}
-      <div className="shrink-0 border-b border-slate-200 pb-3">
+      <div className="shrink-0 border-b border-[var(--border)] pb-3">
         <Link href="/simulador" className="text-sm text-brand-600 hover:underline">← Casos</Link>
         <div className="mt-1 flex flex-wrap items-center gap-2">
-          <h1 className="text-base font-bold text-slate-900">{clinicalCase.title}</h1>
+          <h1 className="text-base font-bold text-[var(--text-1)]">{clinicalCase.title}</h1>
           <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BADGE[clinicalCase.difficulty]}`}>
             {clinicalCase.difficulty}
           </span>
-          <span className="text-xs text-slate-400">{clinicalCase.specialty}</span>
+          <span className="text-xs text-[var(--text-3)]">{clinicalCase.specialty}</span>
         </div>
         {clinicalCase.learning_objectives && (
-          <p className="mt-0.5 text-xs text-slate-500">{clinicalCase.learning_objectives}</p>
+          <p className="mt-0.5 text-xs text-[var(--text-3)]">{clinicalCase.learning_objectives}</p>
         )}
       </div>
 
       {/* Panel de resultado */}
       {result && (
-        <div className="my-3 shrink-0 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="my-3 shrink-0 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
           <div className="flex items-center gap-3">
             <span className={`text-3xl font-bold ${scoreColor}`}>{result.score}/100</span>
             <div>
-              <p className="font-semibold text-slate-800">Evaluación completada</p>
-              <p className="text-xs text-slate-500">Retroalimentación clínica</p>
+              <p className="font-semibold text-[var(--text-1)]">Evaluación completada</p>
+              <p className="text-xs text-[var(--text-3)]">Retroalimentación clínica</p>
             </div>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-slate-700">{result.feedback}</p>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--text-2)]">{result.feedback}</p>
           <Link href="/simulador" className="btn-secondary mt-3 inline-block text-sm">
             Volver a casos
           </Link>
@@ -218,14 +218,14 @@ export default function SimuladorSessionPage() {
         {messages.map((m, i) => (
           <div key={i} className={`flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
             <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm ${
-              m.role === 'user' ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-700'
+              m.role === 'user' ? 'bg-brand-600 text-white' : 'bg-[var(--surface-2)] text-[var(--text-2)]'
             }`}>
               {m.role === 'user' ? '👨‍⚕️' : '🧑‍⚕️'}
             </div>
             <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
               m.role === 'user'
                 ? 'rounded-tr-sm bg-brand-600 text-white'
-                : 'rounded-tl-sm border border-slate-200 bg-white text-slate-800'
+                : 'rounded-tl-sm border border-[var(--border)] bg-[var(--surface)] text-[var(--text-1)]'
             }`}>
               {m.content || (m.streaming && <span className="animate-pulse">▋</span>)}
             </div>
@@ -236,7 +236,7 @@ export default function SimuladorSessionPage() {
 
       {/* Input */}
       {!result && (
-        <div className="shrink-0 space-y-2 border-t border-slate-200 pt-3">
+        <div className="shrink-0 space-y-2 border-t border-[var(--border)] pt-3">
           <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
             <input
               ref={inputRef}
@@ -244,7 +244,7 @@ export default function SimuladorSessionPage() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe tu pregunta al paciente…"
               disabled={loading}
-              className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 disabled:opacity-50"
+              className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-2.5 text-sm text-[var(--text-1)] outline-none placeholder:text-[var(--text-3)] focus:border-brand-400 focus:ring-2 focus:ring-brand-100 disabled:opacity-50"
             />
             <button type="submit" disabled={loading || !input.trim()}
               className="rounded-xl bg-brand-600 px-4 py-2.5 text-white transition-colors hover:bg-brand-700 disabled:opacity-40">
@@ -255,7 +255,7 @@ export default function SimuladorSessionPage() {
           </form>
           {messages.length >= 4 && (
             <button onClick={evaluate} disabled={evaluating}
-              className="w-full rounded-xl border border-slate-200 py-2 text-sm text-slate-600 transition-colors hover:border-brand-300 hover:text-brand-600 disabled:opacity-50">
+              className="w-full rounded-xl border border-[var(--border)] py-2 text-sm text-[var(--text-2)] transition-colors hover:border-brand-300 hover:text-brand-600 disabled:opacity-50">
               {evaluating ? '⏳ Evaluando razonamiento clínico…' : '📋 Finalizar consulta y recibir evaluación'}
             </button>
           )}

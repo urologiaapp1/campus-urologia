@@ -312,18 +312,80 @@ export default function LandingPage({ programs, user }) {
       </section>
 
       {/* ── Cómo funciona ─────────────────────────────────────── */}
-      <section className="bg-white px-6 py-16">
+      <section className="bg-white px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-2xl font-bold text-slate-900">¿Cómo funciona?</h2>
-          <p className="mt-2 text-center text-sm text-slate-500">Tres pasos para empezar tu formación</p>
-          <div className="mt-10 grid gap-8 sm:grid-cols-3">
-            {HOW.map((h) => (
-              <div key={h.step} className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-xl font-black text-brand-600">
-                  {h.step}
+          {/* Encabezado al estilo Apple: subtítulo arriba en small caps */}
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-500">
+              Proceso de admisión
+            </p>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-900">
+              ¿Cómo funciona?
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              Tres pasos para empezar tu formación
+            </p>
+          </div>
+
+          {/* Gradiente compartido entre pasos */}
+          <svg width="0" height="0" className="absolute">
+            <defs>
+              <linearGradient id="how-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#0e7490"/>
+                <stop offset="100%" stopColor="#22d3ee"/>
+              </linearGradient>
+            </defs>
+          </svg>
+
+          {/* Pasos con conectores */}
+          <div className="mt-14 flex flex-col gap-10 sm:flex-row sm:items-start sm:gap-0">
+            {HOW.map((h, i) => (
+              <div key={h.step} className="contents">
+                {/* Paso */}
+                <div className="flex flex-1 flex-col items-center text-center">
+                  {/* Número en anillo */}
+                  <div className="relative flex h-16 w-16 items-center justify-center">
+                    <svg className="absolute inset-0" viewBox="0 0 64 64" fill="none">
+                      <circle cx="32" cy="32" r="30" stroke="#e2e8f0" strokeWidth="1.5"/>
+                      <circle
+                        cx="32" cy="32" r="30"
+                        stroke="url(#how-grad)"
+                        strokeWidth="1.5"
+                        strokeDasharray="188"
+                        strokeDashoffset={188 - (188 * (i + 1)) / HOW.length}
+                        strokeLinecap="round"
+                        style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+                      />
+                    </svg>
+                    <span className="relative z-10 text-lg font-black text-brand-700">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-4 font-bold text-slate-900">{h.title}</h3>
+                  <p className="mt-2 max-w-[180px] text-sm leading-relaxed text-slate-500">{h.desc}</p>
                 </div>
-                <h3 className="mt-4 font-bold text-slate-900">{h.title}</h3>
-                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{h.desc}</p>
+
+                {/* Conector (solo entre pasos, no después del último) */}
+                {i < HOW.length - 1 && (
+                  <div className="flex items-center justify-center sm:mt-8 sm:w-16 sm:flex-none">
+                    {/* Vertical en móvil */}
+                    <div className="flex h-10 flex-col items-center gap-[3px] sm:hidden">
+                      {Array.from({ length: 5 }).map((_, k) => (
+                        <span key={k} className="h-1 w-0.5 rounded-full bg-brand-200" />
+                      ))}
+                    </div>
+                    {/* Horizontal en desktop */}
+                    <div className="hidden items-center gap-[3px] sm:flex">
+                      {Array.from({ length: 5 }).map((_, k) => (
+                        <span key={k} className="h-0.5 w-1 rounded-full bg-brand-200" />
+                      ))}
+                      <svg className="h-3 w-3 text-brand-300" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 2l4 4-4 4"/>
+                      </svg>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -379,37 +441,57 @@ export default function LandingPage({ programs, user }) {
 /* ── Card de curso ───────────────────────────────────────────── */
 function CourseCard({ course: c, user }) {
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5">
-      {/* Banner de color */}
-      <div className={`relative h-36 bg-gradient-to-br ${c.color} p-5 text-white`}>
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="relative flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <span className="rounded-lg bg-white/20 px-2.5 py-1 text-xs font-semibold backdrop-blur">
-              {KIND_LABEL[c.kind] || c.kind}
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-elev-1 transition-all duration-300 hover:shadow-elev-3 hover:-translate-y-1">
+
+      {/* Banner — gradiente limpio sin overlay oscuro */}
+      <div className={`relative h-32 bg-gradient-to-br ${c.color}`}>
+        {/* Ruido sutil para dar profundidad sin oscurecer */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
+
+        {/* Ícono flotante */}
+        <div className="absolute right-5 top-1/2 -translate-y-1/2 text-5xl opacity-90 drop-shadow-sm select-none">
+          {c.icon}
+        </div>
+
+        {/* Badges */}
+        <div className="absolute bottom-4 left-5 flex items-center gap-2">
+          <span className="rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-bold text-slate-700 shadow-sm">
+            {KIND_LABEL[c.kind] || c.kind}
+          </span>
+          {c.level && (
+            <span className="rounded-full bg-black/25 px-2.5 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
+              {c.level}
             </span>
-            {c.level && (
-              <span className="rounded-lg bg-black/20 px-2.5 py-1 text-xs font-medium">
-                {c.level}
-              </span>
-            )}
-          </div>
-          <span className="text-4xl">{c.icon}</span>
+          )}
         </div>
       </div>
 
       {/* Contenido */}
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-bold text-slate-900 leading-snug line-clamp-2">{c.title}</h3>
-        <p className="mt-2 flex-1 text-xs text-slate-500 leading-relaxed line-clamp-3">
+        <h3 className="font-bold leading-snug text-slate-900 line-clamp-2">{c.title}</h3>
+        <p className="mt-2 flex-1 text-xs leading-relaxed text-slate-500 line-clamp-3">
           {c.description}
         </p>
 
         {/* Meta */}
         {(c.duration || c.modules) && (
-          <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-400">
-            {c.duration && <span>⏱ {c.duration}</span>}
-            {c.modules && <span>📚 {c.modules} módulos</span>}
+          <div className="mt-3 flex flex-wrap gap-3">
+            {c.duration && (
+              <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <circle cx="8" cy="8" r="6"/><path d="M8 4.5v3.5l2 2"/>
+                </svg>
+                {c.duration}
+              </span>
+            )}
+            {c.modules && (
+              <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="3" width="12" height="2.5" rx="1"/><rect x="2" y="7" width="12" height="2.5" rx="1"/><rect x="2" y="11" width="8" height="2.5" rx="1"/>
+                </svg>
+                {c.modules} módulos
+              </span>
+            )}
           </div>
         )}
 
@@ -428,8 +510,8 @@ function CourseCard({ course: c, user }) {
                 <div>
                   <p className="text-lg font-black text-brand-700">
                     ${c.price.amount_clp?.toLocaleString('es-CL')}
+                    <span className="ml-1 text-xs font-normal text-slate-400">CLP</span>
                   </p>
-                  <p className="text-xs text-slate-400">CLP</p>
                 </div>
                 <Link href={user ? `/programa/${c.slug}` : '/login'} className="btn-primary text-xs">
                   {user ? 'Ver programa' : 'Inscribirse'}
@@ -437,20 +519,20 @@ function CourseCard({ course: c, user }) {
               </div>
             ) : (
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-slate-500">Próximamente</span>
+                <span className="text-xs font-medium text-slate-400">Próximamente</span>
                 <Link href={`/programa/${c.slug}`} className="btn-secondary text-xs">Ver más</Link>
               </div>
             )
           ) : (
             <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">
+              <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
                 Próximamente
               </span>
               <button
                 onClick={() => document.getElementById('programas')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-xs text-brand-600 hover:underline"
+                className="text-xs font-medium text-brand-600 hover:underline"
               >
-                Lista de espera
+                Notificarme
               </button>
             </div>
           )}

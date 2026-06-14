@@ -38,8 +38,8 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="text-2xl font-bold text-slate-900">Mi perfil</h1>
-      <p className="mt-1 text-sm text-slate-400">{email}</p>
+      <h1 className="text-2xl font-black tracking-tight text-[var(--text-1)]">Mi perfil</h1>
+      <p className="mt-1 text-sm text-[var(--text-3)]">{email}</p>
       <form onSubmit={save} className="card mt-5 space-y-4 p-6">
         <div>
           <label className="label">Nombre completo</label>
@@ -62,7 +62,7 @@ export default function ProfilePage() {
           <button className="btn-primary" disabled={loading}>
             {loading ? 'Guardando…' : 'Guardar'}
           </button>
-          {msg && <p className="text-sm text-slate-600">{msg}</p>}
+          {msg && <p className="text-sm text-[var(--text-2)]">{msg}</p>}
         </div>
       </form>
     </div>

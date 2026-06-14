@@ -33,20 +33,21 @@ export default async function LessonPage({ params }) {
 
   const { data: quiz } = await supabase
     .from('quizzes')
-    .select('id, title, pass_score, quiz_questions(id, question, options, position)')
+    .select('id, title, pass_score, max_attempts, questions_per_attempt, quiz_questions(id, question, options, position)')
     .eq('lesson_id', lesson.id)
     .maybeSingle();
 
-  let lastAttempt = null;
+  let attemptCount = 0;
+  let bestAttempt  = null;
   if (quiz) {
-    const { data: attempts } = await supabase
+    const { data: attempts, count } = await supabase
       .from('quiz_attempts')
-      .select('score, created_at')
+      .select('score, passed, created_at', { count: 'exact' })
       .eq('quiz_id', quiz.id)
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1);
-    lastAttempt = attempts?.[0] || null;
+      .order('score', { ascending: false });
+    attemptCount = count || 0;
+    bestAttempt  = attempts?.[0] || null;
   }
 
   return (
@@ -80,15 +81,18 @@ export default async function LessonPage({ params }) {
 
       {quiz && (
         <div className="mt-10">
-          <h2 className="text-lg font-bold text-slate-900">{quiz.title}</h2>
-          {lastAttempt && (
-            <p className="mt-1 text-sm text-slate-500">
-              Último intento: <b>{lastAttempt.score}%</b>{' '}
-              {lastAttempt.score >= quiz.pass_score ? '— aprobado ✓' : '— no aprobado'}
-            </p>
-          )}
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="text-lg font-bold text-[var(--text-1)]">{quiz.title || 'Evaluación'}</h2>
+            {bestAttempt && (
+              <p className="text-sm text-[var(--text-2)]">
+                Mejor nota: <b>{bestAttempt.score}%</b>{' '}
+                {bestAttempt.passed ? '— aprobado ✓' : '— reprobado'}
+                {' · '}{attemptCount}/{quiz.max_attempts ?? 2} intentos usados
+              </p>
+            )}
+          </div>
           <div className="mt-4">
-            <QuizRunner quiz={quiz} />
+            <QuizRunner quiz={quiz} attemptCount={attemptCount} userId={user.id} />
           </div>
         </div>
       )}

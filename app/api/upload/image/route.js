@@ -1,32 +1,35 @@
 /**
  * POST /api/upload/image
- * Sube una imagen al bucket lesson-images de Supabase Storage.
- * Solo staff. Devuelve { url } pública.
+ * Sube una imagen a Supabase Storage (bucket lesson-images).
+ * Staff (admin/editor): hasta 10 MB → carpeta lessons/
+ * Alumnos autenticados: hasta 5 MB → carpeta comments/
  */
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getSessionProfile } from '@/lib/supabase/server';
 
+const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+
 export async function POST(request) {
-  const { profile } = await getSessionProfile();
-  if (!profile || !['admin', 'editor'].includes(profile.role)) {
-    return Response.json({ error: 'No autorizado' }, { status: 403 });
-  }
+  const { user, profile } = await getSessionProfile();
+  if (!user) return Response.json({ error: 'No autenticado' }, { status: 401 });
+
+  const isStaff  = profile && ['admin', 'editor'].includes(profile.role);
+  const maxBytes = isStaff ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
+  const folder   = isStaff ? 'lessons' : 'comments';
 
   const formData = await request.formData();
   const file = formData.get('file');
   if (!file) return Response.json({ error: 'Archivo requerido' }, { status: 400 });
 
-  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
-  if (!allowed.includes(file.type)) {
+  if (!ALLOWED.includes(file.type)) {
     return Response.json({ error: 'Tipo de archivo no permitido' }, { status: 400 });
   }
-
-  if (file.size > 10 * 1024 * 1024) {
-    return Response.json({ error: 'Imagen demasiado grande (máx 10 MB)' }, { status: 400 });
+  if (file.size > maxBytes) {
+    return Response.json({ error: `Imagen demasiado grande (máx ${isStaff ? '10' : '5'} MB)` }, { status: 400 });
   }
 
-  const ext = file.name.split('.').pop();
-  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const ext  = file.name.split('.').pop().toLowerCase();
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
   const admin = createAdminClient();
   const bytes = await file.arrayBuffer();

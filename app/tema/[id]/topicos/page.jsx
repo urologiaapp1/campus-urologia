@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { extractDriveId } from '@/lib/drive';
 import StarRating from '@/components/StarRating';
+import RichTextEditor from '@/components/RichTextEditor';
 
 export default function ModuleTopics() {
   const { id: moduleId } = useParams();
@@ -91,8 +92,11 @@ export default function ModuleTopics() {
             </div>
             <div>
               <label className="label">Desarrollo / presentación del caso</label>
-              <textarea className="input" rows={5} value={form.body} required
-                onChange={(e) => setForm({ ...form, body: e.target.value })} />
+              <RichTextEditor
+                content={form.body}
+                onChange={(html) => setForm({ ...form, body: html })}
+                placeholder="Describe el caso, agrega imágenes, videos de Drive o YouTube…"
+              />
             </div>
             <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
               <div>

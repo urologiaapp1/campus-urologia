@@ -22,9 +22,9 @@ export default function RecoverPage() {
   return (
     <div className="mx-auto mt-10 max-w-md">
       <div className="card p-8">
-        <h1 className="text-xl font-bold text-slate-900">Recuperar contraseña</h1>
+        <h1 className="text-xl font-bold text-[var(--text-1)]">Recuperar contraseña</h1>
         {sent ? (
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-[var(--text-2)]">
             Si <b>{email}</b> está registrado, recibirás un correo con un enlace para
             crear una nueva contraseña. Revisa también la carpeta de spam.
           </p>

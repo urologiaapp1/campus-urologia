@@ -5,16 +5,15 @@ import { getSessionProfile } from '@/lib/supabase/server';
 export const dynamic = 'force-dynamic';
 
 const BADGE = {
-  básico: 'bg-green-100 text-green-700',
-  intermedio: 'bg-yellow-100 text-yellow-700',
-  avanzado: 'bg-red-100 text-red-700',
+  básico:     'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  intermedio: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  avanzado:   'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 };
 
 export default async function SimuladorPage() {
   const { user, supabase } = await getSessionProfile();
   if (!user) redirect('/login');
 
-  // RLS filtra automáticamente según matrícula (o staff ve todos)
   const { data: cases } = await supabase
     .from('clinical_cases')
     .select('id, title, specialty, difficulty, learning_objectives, program_id, programs(title)')
@@ -31,45 +30,46 @@ export default async function SimuladorPage() {
     <div className="mx-auto max-w-3xl">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">🩺 Simulador de paciente</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-black tracking-tight text-[var(--text-1)]">Simulador de paciente</h1>
+          <p className="mt-1 text-sm text-[var(--text-2)]">
             Practica tu anamnesis con pacientes virtuales generados por IA.
           </p>
         </div>
-        <Link href="/perfil/ia" className="btn-secondary text-sm">⚙️ Mi API key</Link>
+        <Link href="/perfil/ia" className="btn-secondary text-sm">Mi API key</Link>
       </div>
 
       {Object.keys(byProgram).length === 0 ? (
-        <div className="card mt-10 p-8 text-center">
-          <p className="text-slate-500">Sin casos disponibles para tus programas.</p>
-          <p className="mt-1 text-xs text-slate-400">El equipo docente publicará casos clínicos próximamente.</p>
+        <div className="card mt-10 p-10 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--surface-2)] text-2xl">🩺</div>
+          <p className="mt-4 font-medium text-[var(--text-2)]">Sin casos disponibles para tus programas.</p>
+          <p className="mt-1 text-xs text-[var(--text-3)]">El equipo docente publicará casos clínicos próximamente.</p>
         </div>
       ) : (
         Object.entries(byProgram).map(([programId, { title, cases: programCases }]) => (
           <div key={programId} className="mt-8">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">{title}</p>
-            <div className="space-y-3">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-[var(--text-3)]">{title}</p>
+            <div className="space-y-2">
               {programCases.map((c) => (
                 <Link
                   key={c.id}
                   href={`/simulador/${c.id}`}
-                  className="card block p-4 transition-all hover:border-brand-300 hover:shadow-sm"
+                  className="card flex items-center gap-4 p-4 transition-all hover:border-brand-300 hover:shadow-elev-2"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-medium text-slate-900">{c.title}</span>
-                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BADGE[c.difficulty]}`}>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-[var(--text-1)]">{c.title}</span>
+                      {c.difficulty && (
+                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BADGE[c.difficulty] || 'bg-[var(--surface-2)] text-[var(--text-2)]'}`}>
                           {c.difficulty}
                         </span>
-                        <span className="text-xs text-slate-400">{c.specialty}</span>
-                      </div>
-                      {c.learning_objectives && (
-                        <p className="mt-1 line-clamp-2 text-xs text-slate-500">{c.learning_objectives}</p>
                       )}
+                      <span className="text-xs text-[var(--text-3)]">{c.specialty}</span>
                     </div>
-                    <span className="shrink-0 text-brand-400">→</span>
+                    {c.learning_objectives && (
+                      <p className="mt-1 line-clamp-2 text-xs text-[var(--text-3)]">{c.learning_objectives}</p>
+                    )}
                   </div>
+                  <span className="shrink-0 text-[var(--text-3)] transition-colors group-hover:text-brand-500">→</span>
                 </Link>
               ))}
             </div>
