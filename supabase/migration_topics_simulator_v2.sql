@@ -50,6 +50,7 @@ CREATE POLICY "staff gestiona case_programs" ON public.clinical_case_programs
 DROP POLICY IF EXISTS "estudiantes ven sus casos" ON public.clinical_cases;
 DROP POLICY IF EXISTS "staff gestiona casos" ON public.clinical_cases;
 
+DROP POLICY IF EXISTS "ver casos simulador" ON public.clinical_cases;
 CREATE POLICY "ver casos simulador" ON public.clinical_cases
   FOR SELECT USING (
     -- Staff ve todo
@@ -73,6 +74,7 @@ CREATE POLICY "ver casos simulador" ON public.clinical_cases
     )
   );
 
+DROP POLICY IF EXISTS "staff crea y edita casos" ON public.clinical_cases;
 CREATE POLICY "staff crea y edita casos" ON public.clinical_cases
   FOR ALL USING (
     EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin','editor'))
