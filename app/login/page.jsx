@@ -51,9 +51,11 @@ function LoginForm() {
         {/* Logo */}
         <div className="relative">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="inline-block rounded-2xl bg-white px-4 py-2 shadow-lg">
-            <img src="/logo.png" alt="Campus Urología Chile" style={{ height: '36px', width: 'auto', display: 'block' }} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Campus Urología Chile"
+            style={{ height: '36px', width: 'auto', display: 'block', filter: 'brightness(1.4) drop-shadow(0 1px 3px rgba(0,0,0,0.3))' }}
+          />
         </div>
 
         {/* Copy central */}

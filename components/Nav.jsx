@@ -235,15 +235,18 @@ export default function Nav({ user, profile }) {
 
           {/* Logo */}
           <Link href="/" aria-label="Campus Urología Chile" className="group flex shrink-0 items-center">
-            <div className={!user ? 'rounded-2xl bg-white px-4 py-2 shadow-lg transition-shadow duration-200 group-hover:shadow-xl' : 'dark:rounded-xl dark:bg-white dark:px-3 dark:py-1.5'}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo.png"
-                alt="Campus Urología Chile"
-                style={{ height: '40px', width: 'auto', display: 'block' }}
-                className="transition-opacity duration-150 group-hover:opacity-85"
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="Campus Urología Chile"
+              style={{
+                height: '36px',
+                width: 'auto',
+                display: 'block',
+                filter: !user ? 'brightness(1.4) drop-shadow(0 1px 3px rgba(0,0,0,0.3))' : undefined,
+              }}
+              className="transition-opacity duration-150 group-hover:opacity-80 dark:brightness-[1.3]"
+            />
           </Link>
 
           {/* Nav desktop */}
