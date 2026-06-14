@@ -15,7 +15,8 @@ CREATE INDEX IF NOT EXISTS idx_topics_parent ON public.topics(parent_id) WHERE p
 -- La política RLS existente de "ver topicos" ya cubre los hijos
 -- porque heredan el module_id indirectamente.
 -- Política adicional para crear subtemas/tips:
-CREATE POLICY IF NOT EXISTS "crear subtemas" ON public.topics
+DROP POLICY IF EXISTS "crear subtemas" ON public.topics;
+CREATE POLICY "crear subtemas" ON public.topics
   FOR INSERT WITH CHECK (
     parent_id IS NOT NULL
     AND author_id = auth.uid()

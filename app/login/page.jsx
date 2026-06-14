@@ -4,21 +4,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 
-/* ── Logo CUCh ────────────────────────────────────────────────── */
-function LogoUC({ size = 40, className = '' }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className={className}>
-      <rect width="100" height="100" rx="22" fill="#083f52"/>
-      <path d="M40 15 Q11 15 11 46 Q11 77 40 77" stroke="#fff" strokeWidth="11" fill="none" strokeLinecap="round"/>
-      <rect x="50" y="15" width="10" height="41" rx="3" fill="#fff"/>
-      <rect x="73" y="15" width="10" height="41" rx="3" fill="#fff"/>
-      <rect x="50" y="48" width="33" height="10" rx="5" fill="#fff"/>
-      <path d="M57 74 Q49 74 49 82 Q49 90 57 90" stroke="#22d3ee" strokeWidth="5.5" fill="none" strokeLinecap="round"/>
-      <rect x="62" y="70" width="5" height="20" rx="2" fill="#22d3ee"/>
-      <path d="M67 80 Q68 75 75 75 L75 90" stroke="#22d3ee" strokeWidth="5" fill="none" strokeLinecap="round"/>
-    </svg>
-  );
-}
 
 const FEATURES = [
   { icon: '🔬', label: 'Contenido clínico especializado' },
@@ -63,12 +48,11 @@ function LoginForm() {
         <div className="pointer-events-none absolute -bottom-16 left-1/4 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="pointer-events-none absolute right-1/3 top-1/2 h-40 w-40 rounded-full bg-white/5 blur-2xl" />
 
-        {/* Logo + nombre */}
-        <div className="relative flex items-center gap-3">
-          <LogoUC size={40} />
-          <div className="leading-tight">
-            <span className="block text-base font-black tracking-tight text-white">CUCh</span>
-            <span className="block text-[10px] font-medium text-brand-300">Campus Urología Chile</span>
+        {/* Logo */}
+        <div className="relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className="inline-block rounded-2xl bg-white px-4 py-2 shadow-lg">
+            <img src="/logo.png" alt="Campus Urología Chile" style={{ height: '36px', width: 'auto', display: 'block' }} />
           </div>
         </div>
 
@@ -108,9 +92,9 @@ function LoginForm() {
       <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto bg-[var(--bg)] px-6 py-12">
 
         {/* Logo visible solo en móvil */}
-        <div className="mb-8 flex flex-col items-center lg:hidden">
-          <LogoUC size={48} />
-          <span className="mt-2 text-sm font-bold text-[var(--text-1)]">Campus Urología Chile</span>
+        <div className="mb-8 lg:hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Campus Urología Chile" style={{ height: '40px', width: 'auto', display: 'block' }} />
         </div>
 
         <div className="w-full max-w-sm">
