@@ -47,6 +47,24 @@ export default async function RootLayout({ children }) {
         <ThemeProvider>
           <Nav user={user ? { email: user.email } : null} profile={profile} />
           <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+          <footer className="mt-16 border-t border-[var(--border)] bg-[var(--surface)]">
+            <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs text-[var(--text-3)]">
+              <div className="flex items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="CUCh" style={{ height: 28, width: 'auto' }} />
+              </div>
+              <div className="flex flex-wrap items-center gap-6">
+                <span>Formación de postgrado en urología</span>
+                <a
+                  href="mailto:campusurologiachile@gmail.com"
+                  className="font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+                >
+                  campusurologiachile@gmail.com
+                </a>
+              </div>
+              <p>© {new Date().getFullYear()} Campus Urología Chile</p>
+            </div>
+          </footer>
         </ThemeProvider>
       </body>
     </html>

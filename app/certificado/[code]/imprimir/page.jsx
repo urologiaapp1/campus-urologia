@@ -146,7 +146,13 @@ export default async function CertificatePrintPage({ params }) {
 
             {/* Firma */}
             <div style={{ textAlign: 'center', fontFamily: 'Arial, sans-serif' }}>
-              <div style={{ width: 200, borderTop: '1px solid #0e7490', marginBottom: 6 }} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/firma.png"
+                alt="Firma"
+                style={{ height: 60, width: 'auto', display: 'block', margin: '0 auto 4px', objectFit: 'contain' }}
+              />
+              <div style={{ width: 200, borderTop: '1px solid #0e7490', margin: '0 auto 6px' }} />
               <p style={{ fontSize: 11, color: '#475569', margin: 0 }}>Director Académico</p>
               <p style={{ fontSize: 11, color: '#475569', margin: '2px 0 0' }}>Campus Urología Chile</p>
             </div>

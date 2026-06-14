@@ -115,6 +115,8 @@ export default async function CertificatePage({ params }) {
               <p className="mt-1 text-xs text-slate-400">Verificable escaneando el código QR</p>
             </div>
             <div className="text-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/firma.png" alt="Firma" style={{ height: 52, width: 'auto', display: 'block', margin: '0 auto 4px', objectFit: 'contain' }} />
               <div className="mx-auto mb-2 w-36 border-t border-brand-300" />
               <p className="text-xs text-slate-500">Director Académico</p>
               <p className="text-xs text-slate-400">Campus Urología Chile</p>
