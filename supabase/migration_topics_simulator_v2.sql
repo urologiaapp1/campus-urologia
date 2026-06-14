@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.clinical_case_programs (
 ALTER TABLE public.clinical_case_programs ENABLE ROW LEVEL SECURITY;
 
 -- Staff gestiona asignaciones
+DROP POLICY IF EXISTS "staff gestiona case_programs" ON public.clinical_case_programs;
 CREATE POLICY "staff gestiona case_programs" ON public.clinical_case_programs
   FOR ALL USING (
     EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin','editor'))
