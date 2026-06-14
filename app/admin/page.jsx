@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
@@ -12,11 +12,14 @@ function slugify(s) {
 
 export default function AdminPrograms() {
   const supabase = createClient();
-  const [programs, setPrograms] = useState([]);
-  const [myRole, setMyRole] = useState(null);
-  const [title, setTitle] = useState('');
-  const [kind, setKind] = useState('diplomado');
-  const [loading, setLoading] = useState(false);
+  const [programs,   setPrograms]   = useState([]);
+  const [myRole,     setMyRole]     = useState(null);
+  const [title,      setTitle]      = useState('');
+  const [kind,       setKind]       = useState('diplomado');
+  const [loading,    setLoading]    = useState(false);
+  const [duplicating, setDuplicating] = useState(null); // id del programa que se está duplicando
+  const [importing,   setImporting]   = useState(false);
+  const importRef = useRef(null);
 
   const load = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -27,17 +30,10 @@ export default function AdminPrograms() {
     const role = profile?.role;
     setMyRole(role);
 
-    let query = supabase
-      .from('programs')
-      .select('id, slug, title, kind, published')
-      .order('created_at');
+    let query = supabase.from('programs').select('id, slug, title, kind, published').order('created_at');
 
-    // Editores de curso: filtrar por sus asignaciones
     if (role === 'editor') {
-      const { data: staff } = await supabase
-        .from('program_staff')
-        .select('program_id')
-        .eq('user_id', user.id);
+      const { data: staff } = await supabase.from('program_staff').select('program_id').eq('user_id', user.id);
       const ids = (staff || []).map((s) => s.program_id);
       if (ids.length) query = query.in('id', ids);
       else { setPrograms([]); return; }
@@ -70,6 +66,44 @@ export default function AdminPrograms() {
     load();
   }
 
+  async function duplicate(p) {
+    if (!confirm(`¿Duplicar "${p.title}"? Se creará una copia como borrador.`)) return;
+    setDuplicating(p.id);
+    const res = await fetch(`/api/admin/program/${p.id}/duplicate`, { method: 'POST' });
+    const json = await res.json();
+    setDuplicating(null);
+    if (!res.ok) { alert('Error al duplicar: ' + json.error); return; }
+    load();
+  }
+
+  function exportProgram(p) {
+    window.location.href = `/api/admin/program/${p.id}/export`;
+  }
+
+  async function handleImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const json = JSON.parse(text);
+      const res = await fetch('/api/admin/program/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(json),
+      });
+      const data = await res.json();
+      if (!res.ok) { alert('Error al importar: ' + data.error); return; }
+      alert(`Programa "${data.title}" importado como borrador.`);
+      load();
+    } catch (err) {
+      alert('Archivo inválido: ' + err.message);
+    } finally {
+      setImporting(false);
+      if (importRef.current) importRef.current.value = '';
+    }
+  }
+
   const isAdmin = myRole === 'admin';
 
   return (
@@ -77,15 +111,20 @@ export default function AdminPrograms() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-black tracking-tight text-[var(--text-1)]">Programas</h1>
         {isAdmin && (
-          <div className="flex gap-2">
-            <Link href="/admin/casos" className="btn-secondary text-sm">🩺 Casos simulador</Link>
-            <Link href="/admin/banco" className="btn-secondary text-sm">📚 Banco preguntas</Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/admin/casos"    className="btn-secondary text-sm">🩺 Casos</Link>
+            <Link href="/admin/banco"    className="btn-secondary text-sm">📚 Preguntas</Link>
             <Link href="/admin/usuarios" className="btn-secondary text-sm">👥 Usuarios</Link>
+            {/* Importar */}
+            <label className={`btn-secondary text-sm cursor-pointer ${importing ? 'opacity-50 pointer-events-none' : ''}`}>
+              {importing ? 'Importando…' : '⬆ Importar .cuch.json'}
+              <input ref={importRef} type="file" accept=".json,.cuch.json" className="hidden" onChange={handleImport} />
+            </label>
           </div>
         )}
       </div>
 
-      {/* Solo admins globales pueden crear programas */}
+      {/* Crear programa */}
       {isAdmin && (
         <form onSubmit={createProgram} className="card mt-4 flex flex-wrap items-end gap-3 p-4">
           <div className="grow">
@@ -105,12 +144,12 @@ export default function AdminPrograms() {
         </form>
       )}
 
-      <div className="card mt-6 divide-y divide-slate-100">
+      <div className="card mt-6 divide-y divide-[var(--border)]">
         {programs.map((p) => (
           <div key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
             <div>
-              <p className="font-semibold text-slate-800">{p.title}</p>
-              <p className="text-xs text-slate-400">{p.kind} · /{p.slug}</p>
+              <p className="font-semibold text-[var(--text-1)]">{p.title}</p>
+              <p className="text-xs text-[var(--text-3)]">{p.kind} · /{p.slug}</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
@@ -119,20 +158,37 @@ export default function AdminPrograms() {
                 {p.published ? 'Publicado' : 'Borrador'}
               </span>
               {isAdmin && (
-                <button onClick={() => togglePublish(p)} className="btn-secondary">
+                <button onClick={() => togglePublish(p)} className="btn-secondary text-xs">
                   {p.published ? 'Despublicar' : 'Publicar'}
                 </button>
               )}
-              <Link href={`/admin/programa/${p.id}`} className="btn-primary">Contenido</Link>
-              <Link href={`/admin/estadisticas/${p.id}`} className="btn-secondary">Estadísticas</Link>
+              <Link href={`/admin/programa/${p.id}`} className="btn-primary text-xs">Contenido</Link>
+              <Link href={`/admin/estadisticas/${p.id}`} className="btn-secondary text-xs">Estadísticas</Link>
               {isAdmin && (
-                <button onClick={() => remove(p)} className="btn-danger">Eliminar</button>
+                <>
+                  <button
+                    onClick={() => duplicate(p)}
+                    disabled={duplicating === p.id}
+                    className="btn-secondary text-xs"
+                    title="Duplicar programa"
+                  >
+                    {duplicating === p.id ? '…' : '⧉ Duplicar'}
+                  </button>
+                  <button
+                    onClick={() => exportProgram(p)}
+                    className="btn-secondary text-xs"
+                    title="Descargar como .cuch.json"
+                  >
+                    ⬇ Exportar
+                  </button>
+                  <button onClick={() => remove(p)} className="btn-danger text-xs">Eliminar</button>
+                </>
               )}
             </div>
           </div>
         ))}
         {programs.length === 0 && (
-          <p className="px-5 py-4 text-sm text-slate-400">
+          <p className="px-5 py-4 text-sm text-[var(--text-3)]">
             {myRole === 'editor' ? 'No tienes programas asignados.' : 'Aún no hay programas.'}
           </p>
         )}
