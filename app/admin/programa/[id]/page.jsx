@@ -12,6 +12,7 @@ export default function AdminProgramContent() {
   const [modules, setModules] = useState([]);
   const [newModule, setNewModule] = useState('');
   const [desc, setDesc] = useState('');
+  const [enrolled, setEnrolled] = useState(false);
 
   const load = useCallback(async () => {
     const { data: p } = await supabase.from('programs').select('*').eq('id', id).single();
@@ -23,12 +24,35 @@ export default function AdminProgramContent() {
       .eq('program_id', id)
       .order('position');
     setModules(m || []);
+
+    // Verificar si el usuario actual ya está matriculado
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: en } = await supabase
+        .from('enrollments')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .eq('program_id', id)
+        .maybeSingle();
+      setEnrolled(!!en);
+    }
   }, [id]);
   useEffect(() => { load(); }, [load]);
 
   async function saveDescription() {
     await supabase.from('programs').update({ description: desc }).eq('id', id);
     alert('Descripción guardada');
+  }
+
+  async function toggleSelfEnroll() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    if (enrolled) {
+      await supabase.from('enrollments').delete().eq('user_id', user.id).eq('program_id', id);
+    } else {
+      await supabase.from('enrollments').insert({ user_id: user.id, program_id: id });
+    }
+    setEnrolled(!enrolled);
   }
 
   async function addModule(e) {
@@ -87,6 +111,13 @@ export default function AdminProgramContent() {
           <Link href={`/admin/programa/${program.id}/anuncios`} className="btn-secondary text-sm">
             📢 Anuncios
           </Link>
+          <button
+            onClick={toggleSelfEnroll}
+            className={`btn-secondary text-sm ${enrolled ? 'border-green-300 text-green-700' : ''}`}
+            title={enrolled ? 'Ver como alumno / desmatricularse' : 'Matricularme para ver como alumno'}
+          >
+            {enrolled ? '👁 Matriculado (ver)' : '👁 Matricularme'}
+          </button>
           <Link href={`/admin/programa/${program.id}/casos`} className="btn-secondary text-sm">
             🩺 Casos clínicos
           </Link>
