@@ -34,10 +34,11 @@ export default function AdminCasosPage() {
   }, []);
 
   const load = useCallback(async () => {
-    const { data: c } = await supabase
+    const { data: c, error } = await supabase
       .from('clinical_cases')
-      .select('id, title, specialty, difficulty, is_global, program_id, media_type, programs(title), clinical_case_programs(program_id)')
+      .select('id, title, specialty, difficulty, is_global, program_id, programs(title), clinical_case_programs(program_id)')
       .order('created_at', { ascending: false });
+    if (error) console.error('load casos:', error.message);
     setCases(c || []);
     const { data: p } = await supabase.from('programs').select('id, title').order('title');
     setPrograms(p || []);
@@ -120,16 +121,18 @@ export default function AdminCasosPage() {
       learning_objectives: form.learning_objectives,
       is_global:           form.is_global,
       program_id:          form.program_ids.length === 1 ? form.program_ids[0] : null,
-      media_url:           mediaUrl  || null,
-      media_type:          mediaType || null,
+      ...(mediaUrl  ? { media_url: mediaUrl }   : {}),
+      ...(mediaType ? { media_type: mediaType } : {}),
     };
 
     let caseId = editingId;
     if (editingId) {
-      await supabase.from('clinical_cases').update(payload).eq('id', editingId);
+      const { error: uErr } = await supabase.from('clinical_cases').update(payload).eq('id', editingId);
+      if (uErr) { alert('Error al guardar: ' + uErr.message); setSaving(false); return; }
     } else {
-      const { data: inserted } = await supabase.from('clinical_cases')
+      const { data: inserted, error: iErr } = await supabase.from('clinical_cases')
         .insert({ ...payload, created_by: user.id }).select('id').single();
+      if (iErr) { alert('Error al crear: ' + iErr.message); setSaving(false); return; }
       caseId = inserted?.id;
     }
 
