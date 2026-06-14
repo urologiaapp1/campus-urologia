@@ -11,6 +11,7 @@ ALTER TABLE public.clinical_cases
 DROP POLICY IF EXISTS "staff crea y edita casos"    ON public.clinical_cases;
 DROP POLICY IF EXISTS "staff_manage_clinical_cases" ON public.clinical_cases;
 
+DROP POLICY IF EXISTS "admin gestiona casos" ON public.clinical_cases;
 CREATE POLICY "admin gestiona casos" ON public.clinical_cases
   FOR ALL
   USING   (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'))
