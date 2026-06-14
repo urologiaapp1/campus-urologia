@@ -223,13 +223,27 @@ export default function Nav({ user, profile }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-xl" style={{ overflow: 'visible' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2.5">
 
-          {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="CUCh — Campus Urología Chile">
-            <div className="flex h-8 items-center rounded-lg bg-white px-2 shadow-sm ring-1 ring-slate-200/60">
-              <Image src="/logo.png" alt="Campus Urología Chile" width={110} height={28} className="object-contain" priority />
+          {/* Logo — placa colgante que sangra debajo del nav */}
+          <Link
+            href="/"
+            aria-label="Campus Urología Chile"
+            className="group relative z-10 -mb-7 flex shrink-0 self-start"
+          >
+            <div
+              className="rounded-b-3xl rounded-t-xl bg-white px-6 pb-5 pt-3 transition-shadow duration-300 group-hover:shadow-[0_14px_48px_rgba(8,63,82,0.20)]"
+              style={{ boxShadow: '0 8px 28px rgba(8,63,82,0.14), 0 2px 6px rgba(0,0,0,0.06)' }}
+            >
+              <Image
+                src="/logo.png"
+                alt="Campus Urología Chile"
+                width={160}
+                height={46}
+                className="block object-contain"
+                priority
+              />
             </div>
           </Link>
 
