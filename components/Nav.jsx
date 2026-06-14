@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useTheme } from '@/components/ThemeProvider';
 import NotificationBell from '@/components/NotificationBell';
+import Image from 'next/image';
 
 /* ── Íconos SVG ───────────────────────────────────────────────── */
 const Icon = {
@@ -226,11 +227,9 @@ export default function Nav({ user, profile }) {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2.5">
 
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="CUCh — Campus Urología Chile">
-            <LogoUC size={30} />
-            <div className="hidden leading-tight sm:block">
-              <span className="block text-sm font-black tracking-tight text-[var(--text-1)]">CUCh</span>
-              <span className="block text-[10px] font-medium text-[var(--text-3)]">Campus Urología Chile</span>
+          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="CUCh — Campus Urología Chile">
+            <div className="flex h-8 items-center rounded-lg bg-white px-2 shadow-sm ring-1 ring-slate-200/60">
+              <Image src="/logo.png" alt="Campus Urología Chile" width={110} height={28} className="object-contain" priority />
             </div>
           </Link>
 

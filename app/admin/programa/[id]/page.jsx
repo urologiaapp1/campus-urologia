@@ -5,6 +5,156 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { extractDriveId } from '@/lib/drive';
 
+/* ── Generador de código ────────────────────────────────────── */
+function mkCode() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({ length: 8 }, () => c[Math.floor(Math.random() * c.length)]).join('');
+}
+
+/* ── Panel de códigos de acceso ─────────────────────────────── */
+function AccessCodesPanel({ programId }) {
+  const supabase = createClient();
+  const [codes,   setCodes]   = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [copied,  setCopied]  = useState(null);
+
+  const loadCodes = useCallback(async () => {
+    const { data } = await supabase
+      .from('program_access_codes')
+      .select('*')
+      .eq('program_id', programId)
+      .order('created_at', { ascending: false });
+    setCodes(data || []);
+  }, [programId]);
+
+  useEffect(() => { loadCodes(); }, [loadCodes]);
+
+  async function generate(kind) {
+    setLoading(true);
+    const code = mkCode();
+    const { error } = await supabase.from('program_access_codes').insert({
+      program_id: programId, code, kind,
+    });
+    if (error) alert('Error: ' + error.message);
+    else loadCodes();
+    setLoading(false);
+  }
+
+  async function toggle(id, current) {
+    await supabase.from('program_access_codes').update({ is_active: !current }).eq('id', id);
+    loadCodes();
+  }
+
+  async function remove(id) {
+    if (!confirm('¿Eliminar este código?')) return;
+    await supabase.from('program_access_codes').delete().eq('id', id);
+    loadCodes();
+  }
+
+  function copy(code) {
+    navigator.clipboard.writeText(code);
+    setCopied(code);
+    setTimeout(() => setCopied(null), 1500);
+  }
+
+  const active = codes.filter((c) => c.is_active);
+  const used   = codes.filter((c) => !c.is_active || (c.kind === 'single' && c.used_count >= 1));
+
+  return (
+    <div className="card mt-4 p-5 space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-sm font-bold text-[var(--text-1)]">Códigos de acceso</h2>
+          <p className="mt-0.5 text-xs text-[var(--text-3)]">
+            Los alumnos ingresan el código en la página principal para matricularse.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={() => generate('unlimited')} disabled={loading}
+            className="btn-primary text-sm">
+            + Ilimitado
+          </button>
+          <button onClick={() => generate('single')} disabled={loading}
+            className="btn-secondary text-sm">
+            + Uso único
+          </button>
+        </div>
+      </div>
+
+      {codes.length === 0 ? (
+        <p className="py-4 text-center text-sm text-[var(--text-3)]">
+          Sin códigos. Genera uno con los botones de arriba.
+        </p>
+      ) : (
+        <div className="divide-y divide-[var(--border)]">
+          {codes.map((c) => {
+            const expired = c.expires_at && new Date(c.expires_at) < new Date();
+            const exhausted = c.kind === 'single' && c.used_count >= 1;
+            const statusBadge = expired ? 'badge-red' : exhausted ? 'badge-slate'
+              : c.is_active ? 'badge-green' : 'badge-slate';
+            const statusLabel = expired ? 'Expirado' : exhausted ? 'Usado'
+              : c.is_active ? 'Activo' : 'Inactivo';
+
+            return (
+              <div key={c.id} className="flex flex-wrap items-center gap-3 py-3">
+                {/* Código */}
+                <button
+                  onClick={() => copy(c.code)}
+                  title="Copiar código"
+                  className="font-mono text-lg font-black tracking-[0.15em] text-[var(--text-1)] hover:text-brand-600 transition-colors"
+                >
+                  {copied === c.code ? '✓ copiado' : c.code}
+                </button>
+
+                {/* Badges */}
+                <span className={`badge ${c.kind === 'unlimited' ? 'badge-brand' : 'badge-amber'}`}>
+                  {c.kind === 'unlimited' ? '∞ Ilimitado' : '1x Único'}
+                </span>
+                <span className={`badge ${statusBadge}`}>{statusLabel}</span>
+
+                {/* Usos */}
+                <span className="text-xs text-[var(--text-3)]">
+                  {c.used_count} {c.used_count === 1 ? 'uso' : 'usos'}
+                </span>
+
+                {/* Fecha */}
+                <span className="text-xs text-[var(--text-3)] ml-auto">
+                  {new Date(c.created_at).toLocaleDateString('es-CL')}
+                </span>
+
+                {/* Acciones */}
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={() => toggle(c.id, c.is_active)}
+                    className="rounded-lg border border-[var(--border)] px-2 py-1 text-xs text-[var(--text-2)] hover:bg-[var(--surface-2)] transition-colors"
+                  >
+                    {c.is_active ? 'Desactivar' : 'Activar'}
+                  </button>
+                  <button
+                    onClick={() => remove(c.id)}
+                    className="rounded-lg border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50 transition-colors dark:border-red-900/40 dark:hover:bg-red-900/20"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Resumen */}
+      {codes.length > 0 && (
+        <div className="flex gap-4 rounded-xl bg-[var(--surface-2)] px-4 py-2.5 text-xs text-[var(--text-2)]">
+          <span><b className="text-[var(--text-1)]">{active.length}</b> activos</span>
+          <span><b className="text-[var(--text-1)]">{codes.reduce((s, c) => s + c.used_count, 0)}</b> usos totales</span>
+          <span><b className="text-[var(--text-1)]">{codes.filter((c) => c.kind === 'single').length}</b> de uso único</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminProgramContent() {
   const { id } = useParams();
   const supabase = createClient();
@@ -146,34 +296,8 @@ export default function AdminProgramContent() {
         </div>
       </div>
 
-      {/* Código de acceso */}
-      <div className="card mt-4 p-4">
-        <label className="label">Código de acceso</label>
-        <p className="mb-2 text-xs text-slate-500">
-          Los alumnos ingresan este código en la página principal para matricularse automáticamente.
-          Déjalo vacío si el programa no usa código de acceso.
-        </p>
-        <div className="flex items-center gap-2">
-          <input
-            className="input w-48 font-mono text-center text-lg font-bold uppercase tracking-widest"
-            value={accessCode}
-            onChange={(e) => setAccessCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-            placeholder="XXXXXXXX"
-            maxLength={20}
-          />
-          <button onClick={generateCode} className="btn-secondary text-sm">🎲 Generar</button>
-          <button onClick={saveAccessCode} className="btn-primary text-sm">Guardar código</button>
-          {accessCode && (
-            <button onClick={() => { setAccessCode(''); saveAccessCode(); }} className="btn-danger text-sm">Eliminar</button>
-          )}
-        </div>
-        {accessCode && (
-          <p className="mt-2 text-xs text-slate-400">
-            Código activo: <span className="font-mono font-bold text-brand-700">{accessCode}</span>
-            {' · '}Compártelo con tus alumnos para que accedan desde la página principal.
-          </p>
-        )}
-      </div>
+      {/* Códigos de acceso v2 */}
+      <AccessCodesPanel programId={id} />
 
       <div className="card mt-4 p-4">
         <label className="label">Descripción del programa</label>
