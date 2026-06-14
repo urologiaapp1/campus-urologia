@@ -213,12 +213,13 @@ export default function Nav({ user, profile }) {
 
   const isActive = (href) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
+  const isAdmin = profile?.role === 'admin';
   const navLinks = user ? [
     { href: '/dashboard', label: 'Mis programas', Icon: Icon.Dashboard },
     { href: '/simulador', label: 'Simulador',     Icon: Icon.Simulador  },
     { href: '/buscar',    label: 'Buscar',         Icon: Icon.Buscar     },
-    { href: '/ranking',   label: 'Ranking',        Icon: Icon.Ranking    },
-    ...(isStaff ? [{ href: '/admin', label: 'Admin', Icon: Icon.Admin }] : []),
+    ...(isAdmin  ? [{ href: '/ranking', label: 'Ranking', Icon: Icon.Ranking }] : []),
+    ...(isStaff  ? [{ href: '/admin',   label: 'Admin',   Icon: Icon.Admin   }] : []),
   ] : [];
 
   return (

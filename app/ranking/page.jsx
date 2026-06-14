@@ -5,8 +5,9 @@ import { getSessionProfile } from '@/lib/supabase/server';
 export const dynamic = 'force-dynamic';
 
 export default async function RankingPage({ searchParams }) {
-  const { user, supabase } = await getSessionProfile();
+  const { user, profile, supabase } = await getSessionProfile();
   if (!user) redirect('/login');
+  if (profile?.role !== 'admin') redirect('/dashboard');
 
   const { data: enrollments } = await supabase
     .from('enrollments')

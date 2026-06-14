@@ -74,7 +74,16 @@ export default function AdminPrograms() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-slate-900">Programas</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-black tracking-tight text-[var(--text-1)]">Programas</h1>
+        {isAdmin && (
+          <div className="flex gap-2">
+            <Link href="/admin/casos" className="btn-secondary text-sm">🩺 Casos simulador</Link>
+            <Link href="/admin/banco" className="btn-secondary text-sm">📚 Banco preguntas</Link>
+            <Link href="/admin/usuarios" className="btn-secondary text-sm">👥 Usuarios</Link>
+          </div>
+        )}
+      </div>
 
       {/* Solo admins globales pueden crear programas */}
       {isAdmin && (
