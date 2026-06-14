@@ -206,8 +206,8 @@ export default function LandingPage({ programs, user }) {
   return (
     <div className="-mx-4 -mt-8">
 
-      {/* ── Hero ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-700 to-cyan-700 px-6 py-20 text-white">
+      {/* ── Hero — continúa sin corte desde la nav oscura ──────── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-700 to-cyan-700 px-6 pb-20 pt-16 text-white">
         {/* Círculos decorativos */}
         <div className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 rounded-full bg-white/5" />
         <div className="pointer-events-none absolute -bottom-10 left-1/4 h-64 w-64 rounded-full bg-cyan-400/10" />
