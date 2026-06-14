@@ -22,9 +22,6 @@ export default async function RootLayout({ children }) {
       <body>
         <Nav user={user ? { email: user.email } : null} profile={profile} />
         <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-        <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-400">
-          © {new Date().getFullYear()} Urología Sur — Campus Virtual
-        </footer>
       </body>
     </html>
   );
