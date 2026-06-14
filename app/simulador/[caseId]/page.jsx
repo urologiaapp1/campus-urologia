@@ -35,7 +35,7 @@ export default function SimuladorSessionPage() {
     async function init() {
       const { data: c } = await supabase
         .from('clinical_cases')
-        .select('id, title, specialty, difficulty, learning_objectives')
+        .select('id, title, specialty, difficulty, learning_objectives, media_url, media_type')
         .eq('id', caseId)
         .single();
       setClinicalCase(c);
@@ -176,6 +176,16 @@ export default function SimuladorSessionPage() {
         </div>
         {clinicalCase.learning_objectives && (
           <p className="mt-0.5 text-xs text-[var(--text-3)]">{clinicalCase.learning_objectives}</p>
+        )}
+        {/* Media del caso */}
+        {clinicalCase.media_url && (
+          <div className="mt-3 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-2)]">
+            {clinicalCase.media_type === 'video' ? (
+              <video src={clinicalCase.media_url} controls className="max-h-64 w-full object-contain" />
+            ) : (
+              <img src={clinicalCase.media_url} alt="Imagen del caso" className="max-h-64 w-full object-contain" />
+            )}
+          </div>
         )}
       </div>
 

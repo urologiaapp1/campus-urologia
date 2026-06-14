@@ -20,6 +20,15 @@ export default async function AdminLayout({ children }) {
           <Link href="/admin/banco" className={navItem}>Banco de preguntas</Link>
         </nav>
 
+        {profile.role === 'admin' && (
+          <>
+            <p className="label mt-5">Simulador</p>
+            <nav className="mt-2 flex flex-col gap-1 text-sm">
+              <Link href="/admin/casos" className={navItem}>Casos clínicos</Link>
+            </nav>
+          </>
+        )}
+
         <p className="label mt-5">Alumnos</p>
         <nav className="mt-2 flex flex-col gap-1 text-sm">
           <Link href="/admin/cohortes" className={navItem}>Cohortes</Link>
