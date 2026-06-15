@@ -138,7 +138,9 @@ export default function AdminCasosPage() {
     } else {
       const { data: inserted, error: iErr } = await supabase.from('clinical_cases')
         .insert({ ...payload, created_by: user.id }).select('id').single();
-      if (iErr) { alert('Error al crear: ' + iErr.message); setSaving(false); return; }
+      // DIAGNÓSTICO TEMPORAL
+      alert('INSERT resultado:\ndata: ' + JSON.stringify(inserted) + '\nerror: ' + JSON.stringify(iErr));
+      if (iErr) { setSaving(false); return; }
       caseId = inserted?.id;
     }
 
