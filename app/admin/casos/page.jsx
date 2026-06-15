@@ -20,6 +20,7 @@ export default function AdminCasosPage() {
   const [editingId, setEditingId] = useState(null);
   const [showForm,  setShowForm]  = useState(false);
   const [saving,    setSaving]    = useState(false);
+  const [loadError, setLoadError] = useState('');
   const [mediaFile, setMediaFile] = useState(null);   // { file, preview, type }
   const [mediaUploading, setMediaUploading] = useState(false);
   const fileRef = useRef(null);
@@ -34,11 +35,16 @@ export default function AdminCasosPage() {
   }, []);
 
   const load = useCallback(async () => {
+    setLoadError('');
+    // Query simple sin joins que puedan fallar si las migraciones no corrieron
     const { data: c, error } = await supabase
       .from('clinical_cases')
-      .select('id, title, specialty, difficulty, is_global, program_id, programs(title), clinical_case_programs(program_id)')
+      .select('id, title, specialty, difficulty, program_id, programs(title)')
       .order('created_at', { ascending: false });
-    if (error) console.error('load casos:', error.message);
+    if (error) {
+      setLoadError(error.message);
+      return;
+    }
     setCases(c || []);
     const { data: p } = await supabase.from('programs').select('id, title').order('title');
     setPrograms(p || []);
@@ -189,8 +195,6 @@ export default function AdminCasosPage() {
 
   const programLabel = (c) => {
     if (c.is_global) return '🌐 Global';
-    const multi = c.clinical_case_programs?.map((r) => r.program_id) || [];
-    if (multi.length > 1) return `${multi.length} programas`;
     return c.programs?.title || '—';
   };
 
@@ -316,6 +320,14 @@ export default function AdminCasosPage() {
             <button type="button" onClick={cancelForm} className="btn-secondary">Cancelar</button>
           </div>
         </form>
+      )}
+
+      {/* Error de carga */}
+      {loadError && (
+        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 dark:border-red-900/40 dark:bg-red-900/20">
+          <p className="text-sm font-semibold text-red-700 dark:text-red-400">Error al cargar casos:</p>
+          <p className="mt-1 text-xs text-red-600 dark:text-red-300">{loadError}</p>
+        </div>
       )}
 
       {/* Lista */}
