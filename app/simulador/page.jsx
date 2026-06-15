@@ -16,15 +16,31 @@ export default async function SimuladorPage() {
 
   const isStaff = ['admin', 'editor'].includes(profile?.role);
 
-  // RLS devuelve: casos del programa del alumno + globales + multi-programa
-  const { data: cases } = await supabase
+  // Intentar con is_global; si falla (columna no existe), caer a query simple
+  let cases = null;
+  let hasGlobalCol = true;
+
+  const { data: casesWithGlobal, error: errFull } = await supabase
     .from('clinical_cases')
     .select('id, title, specialty, difficulty, learning_objectives, program_id, is_global, programs(title)')
     .order('created_at', { ascending: false });
 
-  // Agrupar: primero los globales, luego por programa
-  const global_cases   = (cases || []).filter((c) => c.is_global);
-  const program_cases  = (cases || []).filter((c) => !c.is_global);
+  if (errFull) {
+    hasGlobalCol = false;
+    const { data: casesSimple } = await supabase
+      .from('clinical_cases')
+      .select('id, title, specialty, difficulty, learning_objectives, program_id, programs(title)')
+      .order('created_at', { ascending: false });
+    cases = casesSimple;
+  } else {
+    cases = casesWithGlobal;
+  }
+
+  const allCases = cases || [];
+
+  // Agrupar: globales primero, luego por programa
+  const global_cases  = hasGlobalCol ? allCases.filter((c) => c.is_global)  : [];
+  const program_cases = hasGlobalCol ? allCases.filter((c) => !c.is_global) : allCases;
 
   const byProgram = program_cases.reduce((acc, c) => {
     const key = c.program_id || 'sin-programa';
@@ -33,7 +49,7 @@ export default async function SimuladorPage() {
     return acc;
   }, {});
 
-  const totalCases = (cases || []).length;
+  const totalCases = allCases.length;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -60,7 +76,6 @@ export default async function SimuladorPage() {
         </div>
       ) : (
         <div className="mt-8 space-y-8">
-          {/* Casos globales */}
           {global_cases.length > 0 && (
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-[var(--text-3)]">
@@ -72,7 +87,6 @@ export default async function SimuladorPage() {
             </div>
           )}
 
-          {/* Casos por programa */}
           {Object.entries(byProgram).map(([key, { title, cases: pCases }]) => (
             <div key={key}>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-[var(--text-3)]">{title}</p>
